@@ -17,6 +17,17 @@ built on a system I can publish, so the claim can be inspected rather than taken
 
 Or point Claude Code at a local checkout of the `plugin/` directory.
 
+## See it
+
+`demo.html` — every token, type role, spacing step and component on one page. Open it from a
+clone; it makes no network requests and works offline.
+
+It is not a static reference. The page measures its own rendered pixels on load and prints what
+it finds, alpha composited against the real backdrop, including anything that fails. The paper
+exhibit shows the page amber failing at 1.34:1 on cream beside the paper gold passing at 5.32:1 —
+because a colour reference that only quotes intended values is the thing this system exists to
+argue against.
+
 ## What's inside
 
 | Skill | What it does |

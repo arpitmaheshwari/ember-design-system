@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="ember">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ember — the design system, demonstrated</title>
+<meta name="description" content="Every token, type role, spacing step and component in the Ember design system, on one page — with contrast measured live from rendered pixels rather than quoted from a spec.">
+<style>
+:root{
+  /* GROUND AND INK — the page is dark by default; paper is a deliberate exception (§5) */
+  --bg:#120B14; --bg-soft:#1B1320; --bg-card:#241830;
+  --ink:#F5EDE6; --ink-muted:rgba(245,237,230,.76); --ink-dim:rgba(245,237,230,.62);
+  --border:rgba(245,237,230,.14);
+
+  /* THE FOUR HEATS — ratios below are printed by the page itself, not typed here */
+  --ember:#FF8A5C; --violet:#E86BFF; --amber:#FFC46B; --rose:#FF7AA8;
+  --g-hot:linear-gradient(92deg,#FF8A5C,#E86BFF);
+
+  /* PAPER — for anything representing a printed or product surface */
+  --paper:#F4ECDA; --paper-ink:#2C2620; --paper-mut:#5F5648; --paper-gold:#7E5A14;
+
+  /* THREE FAMILIES, ONE JOB EACH */
+  --ff-display:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --ff-sans:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --ff-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* THE SCALE — clamped, so it holds from phone to desktop without a breakpoint */
+  --fs-hero:clamp(36px,5.5vw,52px); --fs-title:clamp(24px,3.2vw,31px);
+  --fs-h3:clamp(19px,2.2vw,22px); --fs-body:16px; --fs-ui:14px;
+  --fs-caption:13px; --fs-eyebrow:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ff-sans);
+  font-size:var(--fs-body);line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+section{padding:64px 0;border-top:1px solid var(--border)}
+section:first-of-type{border-top:0}
+
+h1{font-family:var(--ff-display);font-weight:300;font-size:var(--fs-hero);
+  line-height:1.12;letter-spacing:-.02em;margin:0 0 24px}
+h2{font-family:var(--ff-display);font-weight:400;font-size:var(--fs-title);
+  line-height:1.15;letter-spacing:-.01em;margin:0 0 20px;max-width:24ch}
+h3{font-family:var(--ff-display);font-weight:400;font-size:var(--fs-h3);margin:0 0 8px}
+p{max-width:70ch;color:var(--ink-muted);margin:0 0 16px}
+.eyebrow{font-family:var(--ff-sans);font-weight:600;font-size:var(--fs-eyebrow);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:0 0 12px}
+.lede{font-size:18px;color:var(--ink-muted);max-width:62ch}
+code,.mono{font-family:var(--ff-mono);font-size:.9em;letter-spacing:0}
+
+/* ── colour ─────────────────────────────────────────────────────────── */
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));
+  gap:16px;margin-top:32px;padding:0;list-style:none}
+.sw{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg-card)}
+.sw__chip{height:72px}
+.sw__meta{padding:16px}
+.sw__name{font-family:var(--ff-sans);font-weight:600;font-size:var(--fs-ui);margin:0 0 4px}
+.sw__val{font-family:var(--ff-mono);font-size:var(--fs-caption);color:var(--ink-dim);margin:0}
+.sw__job{font-size:var(--fs-caption);color:var(--ink-muted);margin:8px 0 0;max-width:none}
+.ratio{display:inline-block;margin-top:12px;padding:4px 8px;border-radius:999px;
+  font-family:var(--ff-mono);font-size:12px;border:1px solid var(--border)}
+.ratio--pass{color:#7FCF9E;border-color:rgba(127,207,158,.4)}
+.ratio--fail{color:var(--rose);border-color:rgba(255,122,168,.5)}
+
+/* ── type ───────────────────────────────────────────────────────────── */
+.scale{list-style:none;padding:0;margin:32px 0 0}
+.scale li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;
+  padding:16px 0;border-bottom:1px solid var(--border)}
+.scale .label{font-family:var(--ff-mono);font-size:var(--fs-caption);color:var(--ink-dim);
+  text-align:right;white-space:nowrap}
+
+/* ── spacing ────────────────────────────────────────────────────────── */
+.steps{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-top:32px;padding:0;list-style:none}
+.step{text-align:center}
+.step i{display:block;background:var(--g-hot);border-radius:3px;height:24px}
+.step span{display:block;margin-top:8px;font-family:var(--ff-mono);font-size:12px;color:var(--ink-dim)}
+
+/* ── components ─────────────────────────────────────────────────────── */
+.cta{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;
+  background:var(--g-hot);color:#1A0D08;font-family:var(--ff-sans);font-weight:600;
+  font-size:var(--fs-ui);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border:0}
+.cta--ghost{background:none;color:var(--amber);border:1px solid rgba(255,196,107,.55)}
+.demo-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:24px}
+
+.thesis{border:1px solid rgba(255,196,107,.4);border-radius:12px;padding:32px;margin-top:32px;
+  background:linear-gradient(160deg,rgba(255,196,107,.07),rgba(232,107,255,.05));text-align:center}
+.thesis .t-l{display:block;font-family:var(--ff-sans);font-weight:600;font-size:11.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+.thesis p{font-family:var(--ff-display);font-size:clamp(20px,2.6vw,26px);line-height:1.35;
+  color:var(--ink);margin:0 auto;max-width:30ch}
+
+.paper{background:var(--paper);color:var(--paper-ink);border-radius:12px;padding:32px;margin-top:32px}
+.paper h3{color:var(--paper-ink);margin-top:0}
+.paper p{color:var(--paper-mut);max-width:60ch}
+.paper .k{font-family:var(--ff-sans);font-weight:600;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--paper-gold);margin:0 0 8px}
+
+/* the exhibit is one object: the lesson on the left, the proof of it on the right. Capping the
+   text and leaving the rest of the block empty would break the rule stated two sections below. */
+.paper__grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px;align-items:start}
+.proof{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.proof li{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:12px 16px;background:rgba(44,38,32,.06);border-radius:8px;
+  border-left:3px solid transparent}
+.proof .lbl{font-size:13px}
+.proof .num{font-family:var(--ff-mono);font-size:13px;white-space:nowrap}
+@media (max-width:760px){ .paper__grid{grid-template-columns:minmax(0,1fr)} }
+
+/* ── rules + gates ──────────────────────────────────────────────────── */
+.rules{list-style:none;padding:0;margin:32px 0 0;display:grid;gap:20px}
+.rules li{padding-left:16px;border-left:2px solid rgba(255,138,92,.45)}
+.rules b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;margin-top:32px;font-size:var(--fs-ui)}
+th,td{text-align:left;padding:12px 16px 12px 0;border-bottom:1px solid var(--border);
+  color:var(--ink-muted);vertical-align:top}
+th{font-family:var(--ff-sans);font-weight:600;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-dim)}
+td:first-child{font-family:var(--ff-mono);color:var(--ink);white-space:nowrap}
+.scroll-x{overflow-x:auto}
+
+footer{padding:64px 0;border-top:1px solid var(--border);color:var(--ink-dim);font-size:var(--fs-caption)}
+a{color:var(--amber)}
+@media (max-width:640px){
+  .scale li{grid-template-columns:minmax(0,1fr);gap:4px}
+  .scale .label{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<section>
+  <p class="eyebrow">Ember · design system</p>
+  <h1>A system you can check, not one you have to trust.</h1>
+  <p class="lede">Every token, type role, spacing step and component below is the one shipping on
+    arpitmaheshwari.com. The contrast figures are not quoted from a spec — this page measures its
+    own rendered pixels when it loads and prints what it finds, including any failures.</p>
+  <div class="demo-row">
+    <a class="cta" href="https://arpitmaheshwari.com">The site it runs on</a>
+    <a class="cta cta--ghost" href="https://github.com/arpitmaheshwari/ember-design-system">The plugin</a>
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">01 · Colour</p>
+  <h2>Four heats, and a rule that isn't in the values.</h2>
+  <p>Heat is semantic, never decorative. A colour marks a <em>kind</em> of thing — if two elements
+    share a heat they should share a meaning, and if they don't, one of them is wrong. The ratios
+    are computed below against this page's actual ground, with alpha composited properly: a
+    translucent ink is not a colour until you composite it over what is behind it.</p>
+  <ul class="swatches" id="swatches"></ul>
+</section>
+
+<section>
+  <p class="eyebrow">02 · Type</p>
+  <h2>Three families, one job each. Never mix the jobs.</h2>
+  <p><b>Source Serif 4</b> announces — headlines and pull quotes, weight 300 at display sizes.
+    <b>Source Sans 3</b> is read — body, UI, and (at 600 weight, uppercase, <code>.08em</code>)
+    every label. <b>JetBrains Mono</b> is for code, and only code. Mono is not a label style.</p>
+  <ul class="scale">
+    <li><span style="font-family:var(--ff-display);font-weight:300;font-size:var(--fs-hero);line-height:1.1">Hero headline</span><span class="label">display 300 · clamp(36, 5.5vw, 52)</span></li>
+    <li><span style="font-family:var(--ff-display);font-size:var(--fs-title)">Section title</span><span class="label">display 400 · clamp(24, 3.2vw, 31)</span></li>
+    <li><span style="font-family:var(--ff-display);font-size:var(--fs-h3)">Sub-head</span><span class="label">display 400 · clamp(19, 2.2vw, 22)</span></li>
+    <li><span style="font-size:var(--fs-body)">Body copy, capped at about 70 characters</span><span class="label">sans 400 · 16 / 1.7</span></li>
+    <li><span style="font-size:var(--fs-ui)">Interface text</span><span class="label">sans 400 · 14</span></li>
+    <li><span class="eyebrow" style="margin:0">Label · eyebrow · CTA</span><span class="label">sans 600 · 12 · .08em · upper</span></li>
+    <li><span class="mono" style="font-size:var(--fs-caption)">python3 tools/contrast-audit.py</span><span class="label">mono · 13</span></li>
+  </ul>
+  <p style="margin-top:24px">One scale, no improvised sizes. Uppercase always carries tracking;
+    lowercase never does.</p>
+</section>
+
+<section>
+  <p class="eyebrow">03 · Spacing</p>
+  <h2>An 8px-derived grid, enforced by a gate rather than by memory.</h2>
+  <p>Below 4px is an optical nudge and exempt. Above 80px is structural and exempt. Anything
+    between that is off-grid needs a reason — because "just 6px here" is how a system dies by a
+    thousand small mercies. A check reads every stylesheet and fails the build on an off-grid value.</p>
+  <ul class="steps" id="steps"></ul>
+</section>
+
+<section>
+  <p class="eyebrow">04 · Components</p>
+  <h2>The grammar, not the parts list.</h2>
+
+  <h3>Call to action</h3>
+  <p>One grammar everywhere: uppercase label face, <code>.08em</code> tracking, the arrow bound to
+    the last word so it can never orphan onto its own line. The gradient is the primary fill and it
+    does not change by viewport — a phone and a laptop must agree about what a component is.</p>
+  <div class="demo-row">
+    <a class="cta" href="#">Send me the role&nbsp;↗</a>
+    <a class="cta cta--ghost" href="#">See selected work&nbsp;→</a>
+  </div>
+
+  <h3 style="margin-top:40px">Thesis plate</h3>
+  <p>Every case study opens on the one stealable principle it exists to prove.</p>
+  <div class="thesis">
+    <span class="t-l">The principle this page proves</span>
+    <p>A design system is the set of decisions that explain why a value is what it is — not the values.</p>
+  </div>
+
+  <h3 style="margin-top:40px">Paper exhibit</h3>
+  <p>A diagram representing a printed or product surface keeps a light ground inside the dark page.
+    Material carries meaning; flattening it to match the theme costs information. Note that the
+    label below uses the <em>paper</em> gold, not the page amber — the ink follows the surface,
+    never the component name.</p>
+  <div class="paper">
+    <div class="paper__grid">
+      <div>
+        <p class="k">Exhibit · a printed thing</p>
+        <h3>The ink follows the surface.</h3>
+        <p>Same token, same component name, wrong surface. This is the single most common way a
+          design system produces unreadable text — and the comparison beside this is measured
+          live, not asserted.</p>
+      </div>
+      <ul class="proof" id="proof"></ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">05 · The rules that aren't in the values</p>
+  <h2>Where design systems actually fail.</h2>
+  <ul class="rules">
+    <li><b>A component declares its own ink on its own ground.</b> Never inherit colour and hope. A
+      page-level selector will eventually match your element and win — that produced invisible text
+      three separate times here, once in production.</li>
+    <li><b>Never state a contrast ratio you have not measured on rendered pixels.</b> Style-based
+      checks lie in two specific ways: gradient text reports its transparent fallback (a real 8:1
+      headline measuring 1.00:1), and a translucent ink must be composited over what is behind it
+      before the number means anything.</li>
+    <li><b>Whitespace is designed or it is a defect.</b> Capped text inside a wider container is a
+      decision about the remaining space: give it a content role, or don't cap the text.</li>
+    <li><b>Rows align to each other, not just inside correct bounds.</b> Every cell aligns to its
+      siblings; every row to the row above. Outer-box checks pass layouts that look visibly wrong.</li>
+    <li><b>Test the range, not the breakpoints.</b> 1440 and 390 prove two points. Grids break in
+      between — check ~1024 and ~768 as well.</li>
+    <li><b><code>grid-column: 2</code> needs a column 2.</b> When a mobile override collapses a grid
+      to one track, reset the children's placements too, or the browser creates an implicit second
+      track and your "one column" is silently two.</li>
+  </ul>
+</section>
+
+<section>
+  <p class="eyebrow">06 · The gates</p>
+  <h2>Ten checks, each born from a defect that got through.</h2>
+  <p>A check you have not watched fail is not evidence. Every gate plants a defect, requires itself
+    to go red, then removes it — because three separate times a check reported "clean" while
+    measuring nothing at all.</p>
+  <div class="scroll-x">
+  <table>
+    <thead><tr><th>Gate</th><th>Catches</th><th>Born from</th></tr></thead>
+    <tbody>
+      <tr><td>canon-lint</td><td>banned or stale facts</td><td>prose drifting from the locked source of truth</td></tr>
+      <tr><td>case-sync-check</td><td>two surfaces telling one story differently</td><td>the long-form and the short-form disagreeing</td></tr>
+      <tr><td>overflow-sweep</td><td>content escaping the viewport</td><td>text running off-screen on real pages</td></tr>
+      <tr><td>balance-check</td><td>lopsided whitespace</td><td>a 457px void down one side, shipped on six pages</td></tr>
+      <tr><td>contrast-audit</td><td>text below WCAG, from rendered pixels</td><td>style-based checks lying about gradients</td></tr>
+      <tr><td>artifact-legibility</td><td>invisible text inside inlined SVG</td><td>cream-on-cream that reached production</td></tr>
+      <tr><td>asset-load-check</td><td>images that never paint</td><td>an invalid SVG every text check passed</td></tr>
+      <tr><td>inline-style-check</td><td>an unnamed repeated component; off-grid spacing</td><td>one mono label spelled 16 different ways</td></tr>
+      <tr><td>theme-remnant</td><td>a retired palette still painting</td><td>a half-finished theme port</td></tr>
+      <tr><td>css-version-check</td><td>a stylesheet edited without a cache bump</td><td>the author's browser serving an older file than disk</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:24px">What none of this covers: whether the writing is any good, whether the
+    layout is well composed, or whether the claim is honest. Gates protect the floor. They never
+    raise the ceiling.</p>
+</section>
+
+<section>
+  <p class="eyebrow">07 · This page, measured</p>
+  <h2>What it found in itself.</h2>
+  <p>Computed on load from <code>getComputedStyle</code>, with alpha composited against the real
+    backdrop. If something here fails, it says so rather than omitting it.</p>
+  <div class="scroll-x">
+    <table><thead><tr><th>Sample</th><th>Ink on ground</th><th>Ratio</th><th>Verdict</th></tr></thead>
+    <tbody id="selfaudit"></tbody></table>
+  </div>
+</section>
+
+<footer>
+  <p style="max-width:70ch">Ember is the design system behind
+    <a href="https://arpitmaheshwari.com">arpitmaheshwari.com</a>, published as an installable
+    Claude plugin so that work arrives on-system instead of being corrected into it afterwards.
+    MIT licensed — the system is mine, the method is anyone's.</p>
+  <p class="mono" style="font-size:12px;color:var(--ink-dim)">/plugin marketplace add arpitmaheshwari/ember-design-system</p>
+  <p style="font-size:12px;color:var(--ink-dim);max-width:70ch">Fonts fall back to system faces
+    when Source Serif 4, Source Sans 3 and JetBrains Mono are not installed — this file makes no
+    network requests, so it works from a clone, offline.</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  // Contrast, done the way the system insists on: parse the COMPUTED colour, composite any alpha
+  // over the real backdrop, then compare relative luminances. Quoting a token would defeat the point.
+  function parse(c) {
+    var m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+    var p = m[1].split(',').map(function (x) { return parseFloat(x); });
+    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+  }
+  function over(fg, bg) {
+    return { r: fg.r * fg.a + bg.r * (1 - fg.a),
+             g: fg.g * fg.a + bg.g * (1 - fg.a),
+             b: fg.b * fg.a + bg.b * (1 - fg.a), a: 1 };
+  }
+  function lum(c) {
+    var v = [c.r, c.g, c.b].map(function (x) {
+      x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  }
+  function ratio(a, b) {
+    var la = lum(a), lb = lum(b), hi = Math.max(la, lb), lo = Math.min(la, lb);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  function groundOf(el) {
+    // walk up until something actually paints — a background-IMAGE stops the walk, because a
+    // gradient is not a flat colour and guessing one is how a 1.18:1 CTA once passed a checker.
+    var n = el;
+    while (n && n !== document.documentElement) {
+      var cs = getComputedStyle(n);
+      if (cs.backgroundImage && cs.backgroundImage !== 'none') return null;
+      var c = parse(cs.backgroundColor);
+      if (c && c.a === 1) return c;
+      n = n.parentElement;
+    }
+    return parse(getComputedStyle(document.body).backgroundColor);
+  }
+  function fmt(c) { return '#' + [c.r, c.g, c.b].map(function (x) {
+    return ('0' + Math.round(x).toString(16)).slice(-2).toUpperCase(); }).join(''); }
+
+  var HEATS = [
+    ['--ember',  'Ember',  'primary heat — action, emphasis'],
+    ['--violet', 'Violet', 'secondary heat — contrast within a set'],
+    ['--amber',  'Amber',  'links, kickers, CTAs — the safest heat'],
+    ['--rose',   'Rose',   'the fourth voice, used sparingly'],
+    ['--ink',        'Ink',       'primary text'],
+    ['--ink-muted',  'Ink muted', 'body copy — 76% alpha, composited below'],
+    ['--ink-dim',    'Ink dim',   'captions and labels — 62% alpha']
+  ];
+  // An eighth card, and not only to square the grid: the CTA fill is a GRADIENT, so it has no
+  // single ratio to print. Saying that out loud is the honest version of a colour reference —
+  // and it is exactly the case where a style-based checker reports a confident wrong number.
+  var GRADIENT = ['--g-hot', 'Hot gradient', 'the primary CTA fill — ember → violet'];
+  var root = getComputedStyle(document.documentElement);
+  var pageBg = parse(root.getPropertyValue('--bg').trim() ||
+                     getComputedStyle(document.body).backgroundColor) ||
+               parse(getComputedStyle(document.body).backgroundColor);
+  // --bg is a hex; normalise via a probe element so one code path handles hex and rgba alike
+  var probe = document.createElement('span'); probe.style.color = 'var(--bg)';
+  document.body.appendChild(probe); pageBg = parse(getComputedStyle(probe).color); probe.remove();
+
+  var ul = document.getElementById('swatches');
+  HEATS.forEach(function (h) {
+    var p = document.createElement('span'); p.style.color = 'var(' + h[0] + ')';
+    document.body.appendChild(p); var raw = parse(getComputedStyle(p).color); p.remove();
+    var solid = raw.a < 1 ? over(raw, pageBg) : raw;
+    var r = ratio(solid, pageBg), ok = r >= 4.5;
+    var li = document.createElement('li'); li.className = 'sw';
+    li.innerHTML =
+      '<div class="sw__chip" style="background:var(' + h[0] + ')"></div>' +
+      '<div class="sw__meta"><p class="sw__name">' + h[1] + '</p>' +
+      '<p class="sw__val">var(' + h[0] + ') → ' + fmt(solid) +
+      (raw.a < 1 ? ' <span style="opacity:.7">(composited from ' + Math.round(raw.a * 100) + '%)</span>' : '') +
+      '</p><p class="sw__job">' + h[2] + '</p>' +
+      '<span class="ratio ' + (ok ? 'ratio--pass' : 'ratio--fail') + '">' +
+      r.toFixed(2) + ':1 · ' + (ok ? 'AA' : 'below AA') + '</span></div>';
+    ul.appendChild(li);
+  });
+  var gl = document.createElement('li'); gl.className = 'sw';
+  gl.innerHTML =
+    '<div class="sw__chip" style="background:var(' + GRADIENT[0] + ')"></div>' +
+    '<div class="sw__meta"><p class="sw__name">' + GRADIENT[1] + '</p>' +
+    '<p class="sw__val">var(' + GRADIENT[0] + ')</p>' +
+    '<p class="sw__job">' + GRADIENT[2] + '</p>' +
+    '<span class="ratio">no single ratio — measure the pixels</span></div>';
+  ul.appendChild(gl);
+
+  // The proof beside the exhibit: the same label, both inks, measured against the paper it sits on.
+  var paperBg = parse(getComputedStyle(document.querySelector('.paper')).backgroundColor);
+  [['--amber', 'Page amber on paper'], ['--paper-gold', 'Paper gold on paper'],
+   ['--paper-ink', 'Paper ink on paper']].forEach(function (t) {
+    var pr = document.createElement('span'); pr.style.color = 'var(' + t[0] + ')';
+    document.body.appendChild(pr); var col = parse(getComputedStyle(pr).color); pr.remove();
+    var solid = col.a < 1 ? over(col, paperBg) : col;
+    var r = ratio(solid, paperBg), ok = r >= 4.5;
+    var li = document.createElement('li');
+    li.style.borderLeftColor = ok ? '#2F5D52' : '#A93A24';
+    li.innerHTML = '<span class="lbl" style="color:' + fmt(solid) + '">' + t[1] + '</span>' +
+      '<span class="num" style="color:' + (ok ? '#2F5D52' : '#A93A24') + '">' +
+      r.toFixed(2) + ':1 ' + (ok ? '✓' : '✗') + '</span>';
+    document.getElementById('proof').appendChild(li);
+  });
+
+  var GRID = [4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80];
+  var steps = document.getElementById('steps');
+  GRID.forEach(function (n) {
+    var li = document.createElement('li'); li.className = 'step';
+    li.innerHTML = '<i style="width:' + n + 'px"></i><span>' + n + '</span>';
+    steps.appendChild(li);
+  });
+
+  // Self-audit: sample real text on this page, report honestly, fail loudly if anything is short.
+  // Selectors are deliberately exact: `p` alone matched the eyebrow (also a <p>) and reported it
+  // as "Body copy", and `.paper p` matched the paper LABEL. A self-audit that mislabels its own
+  // samples is worse than none — it produces confident numbers about the wrong thing.
+  var SAMPLES = [['h1', 'Hero headline'], ['p.lede', 'Lede'],
+                 ['section p:not(.eyebrow):not(.lede):not(.k)', 'Body copy'],
+                 ['.eyebrow', 'Eyebrow label'], ['.sw__val', 'Mono caption'],
+                 ['.paper h3', 'Paper sub-head'], ['.paper p:not(.k)', 'Paper body'],
+                 ['.paper .k', 'Paper label'], ['.cta', 'Primary CTA'],
+                 ['.thesis p', 'Thesis quote'], ['td', 'Table cell']];
+  var tb = document.getElementById('selfaudit'), fails = 0;
+  SAMPLES.forEach(function (s) {
+    var el = document.querySelector(s[0]); if (!el) return;
+    var cs = getComputedStyle(el);
+    var g = groundOf(el);
+    var tr = document.createElement('tr');
+    if (!g) {
+      tr.innerHTML = '<td>' + s[1] + '</td><td>gradient ground</td><td>—</td>' +
+        '<td style="color:var(--ink-dim)">not measurable by this method — needs pixel sampling</td>';
+      tb.appendChild(tr); return;
+    }
+    var raw = parse(cs.color); var solid = raw.a < 1 ? over(raw, g) : raw;
+    var size = parseFloat(cs.fontSize), bold = parseInt(cs.fontWeight, 10) >= 700;
+    var need = (size >= 24 || (bold && size >= 18.66)) ? 3 : 4.5;
+    var r = ratio(solid, g), ok = r >= need; if (!ok) fails++;
+    tr.innerHTML = '<td>' + s[1] + '</td><td>' + fmt(solid) + ' on ' + fmt(g) + '</td>' +
+      '<td>' + r.toFixed(2) + ':1</td>' +
+      '<td style="color:' + (ok ? '#7FCF9E' : '#FF7AA8') + '">' +
+      (ok ? 'passes ' + need : 'BELOW ' + need) + '</td>';
+    tb.appendChild(tr);
+  });
+  var row = document.createElement('tr');
+  row.innerHTML = '<td colspan="4" style="color:' + (fails ? '#FF7AA8' : '#7FCF9E') + '">' +
+    (fails ? fails + ' sample(s) below threshold — printed rather than hidden.'
+           : 'All samples pass. Blind spots: hover and focus states, text over gradients, and ' +
+             'anything not reachable on load are NOT measured.') + '</td>';
+  tb.appendChild(row);
+})();
+</script>
+</body>
+</html>
