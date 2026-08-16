@@ -24,14 +24,17 @@ Ground and ink:
 | `--ink-dim` | `rgba(245,237,230,.62)` | captions, labels |
 | `--border` | `rgba(245,237,230,.14)` | hairlines |
 
-The four heats — each measured against `--bg`, not guessed:
+The four heats — each measured against `--bg` (`#120B14`), not guessed. These were WRONG until
+2026-08-17: the table quoted 8.0 / 7.1 / 11.3 / 7.6, understated by up to a full point, in a
+document that tells you never to state a ratio you have not measured. Found when a gallery that
+computes them live disagreed with the table, and confirmed in two independent implementations:
 
 | Token | Value | Contrast | Means |
 |---|---|---|---|
-| `--ember` | `#FF8A5C` | 8.0:1 | the primary heat; action, emphasis |
-| `--violet` | `#E86BFF` | 7.1:1 | secondary heat; contrast within a set |
-| `--amber` | `#FFC46B` | 11.3:1 | links, CTAs, kickers — the safest heat |
-| `--rose` | `#FF7AA8` | 7.6:1 | the fourth voice, used sparingly |
+| `--ember` | `#FF8A5C` | 8.3:1 | the primary heat; action, emphasis |
+| `--violet` | `#E86BFF` | 7.4:1 | secondary heat; contrast within a set |
+| `--amber` | `#FFC46B` | 12.3:1 | links, CTAs, kickers — the safest heat |
+| `--rose` | `#FF7AA8` | 7.9:1 | the fourth voice, used sparingly |
 
 `--g-hot: linear-gradient(92deg,#FF8A5C,#E86BFF)` is the CTA fill.
 
